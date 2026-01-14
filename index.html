@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Avengers Secret Wars Countdown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@font-face {
+  font-family: "Digital";
+  src: url("https://fonts.gstatic.com/s/segment7standard/v16/JIbnV_nswMc2G0FJ0nGzJ9w.woff2");
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: black;
+}
+
+body {
+  background: url("https://i.ibb.co/39F95CBC/images.jpg") center/contain no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.countdown {
+  margin-bottom: 9vh;
+  font-family: "Digital", monospace;
+  font-size: 2.2rem;
+  letter-spacing: 4px;
+
+  /* WHITE + GREEN CINEMATIC STYLE */
+  color: #ffffff;
+  text-shadow:
+    0 0 6px rgba(0, 255, 170, 0.55),
+    0 0 14px rgba(0, 200, 120, 0.45),
+    0 0 24px rgba(0, 140, 90, 0.3);
+}
+
+audio {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .countdown {
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+  }
+}
+</style>
+</head>
+
+<body onclick="enableSound()">
+
+<div class="countdown" id="timer">
+  00 MONTH : 00 DAYS : 00 HOURS : 00 MIN : 00 SEC
+</div>
+
+<audio id="tick" src="tick.mp3" preload="auto"></audio>
+
+<script>
+const target = new Date("December 17, 2027 00:00:00").getTime();
+let soundEnabled = false;
+
+function enableSound() {
+  soundEnabled = true;
+}
+
+function update() {
+  const now = new Date();
+  const t = target;
+
+  // Months difference
+  let months = (t.getFullYear() - now.getFullYear()) * 12 + (t.getMonth() - now.getMonth());
+  let days = t.getDate() - now.getDate();
+  if (days < 0) {
+    months -= 1;
+    const prevMonth = new Date(t.getFullYear(), t.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+
+  const hours = t.getHours() - now.getHours();
+  const minutes = t.getMinutes() - now.getMinutes();
+  const seconds = t.getSeconds() - now.getSeconds();
+
+  // Handle negative numbers
+  const finalMonths = Math.max(months,0);
+  const finalDays = Math.max(days,0);
+  const finalHours = (hours + 24) % 24;
+  const finalMinutes = (minutes + 60) % 60;
+  const finalSeconds = (seconds + 60) % 60;
+
+  document.getElementById("timer").textContent =
+    `${String(finalMonths).padStart(2,"0")} MONTH : ${String(finalDays).padStart(2,"0")} DAYS : ${String(finalHours).padStart(2,"0")} HOURS : ${String(finalMinutes).padStart(2,"0")} MIN : ${String(finalSeconds).padStart(2,"0")} SEC`;
+
+  if (soundEnabled) {
+    const tck = document.getElementById("tick");
+    tck.currentTime = 0;
+    tck.play();
+  }
+}
+
+update();
+setInterval(update, 1000);
+</script>
+
+</body>
+</html>
